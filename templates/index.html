@@ -1,0 +1,472 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>StudentHub | Student Management</title>
+<style>
+:root {
+    --navy: #14294b;
+    --blue: #3478f6;
+    --bg: #f4f7fc;
+    --text: #192d4d;
+    --muted: #7585a0;
+    --border: #e5ebf5;
+    --white: #fff;
+}
+* { box-sizing: border-box; }
+body {
+    margin: 0;
+    font-family: Inter, "Segoe UI", Arial, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+}
+button, input, select { font: inherit; }
+button, a { -webkit-tap-highlight-color: transparent; }
+.layout { display: flex; min-height: 100vh; }
+.sidebar {
+    width: 235px;
+    background: linear-gradient(165deg, #14294b, #0e203d);
+    color: white;
+    padding: 25px 15px;
+    display: flex;
+    flex-direction: column;
+    flex-shrink: 0;
+}
+.brand {
+    display: flex; align-items: center; gap: 11px;
+    padding: 5px 8px 34px;
+    font-size: 20px; font-weight: 800;
+}
+.brand-icon {
+    background: #3478f6; width: 42px; height: 42px;
+    display: grid; place-items: center; border-radius: 13px;
+    font-size: 23px;
+}
+.nav-label {
+    color: #91a5c5; font-size: 11px; letter-spacing: 1.5px;
+    font-weight: 700; padding: 0 12px 12px;
+}
+.nav a {
+    display: flex; align-items: center; gap: 13px;
+    padding: 13px 14px; margin-bottom: 7px;
+    border-radius: 10px; color: #d7e2f5;
+    text-decoration: none; font-size: 14px;
+}
+.nav a.active, .nav a:hover { background: #3478f6; color: white; }
+.nav-icon { width: 21px; text-align: center; font-size: 17px; }
+.sidebar-bottom {
+    margin-top: auto; padding: 20px 12px 5px;
+    color: #d7e2f5; font-size: 12px; line-height: 1.7;
+}
+.education {
+    background: #203a60; border: 1px solid #304a6d;
+    border-radius: 13px; padding: 17px; text-align: center;
+}
+.education strong { display: block; font-size: 14px; color: white; }
+.main { min-width: 0; flex: 1; }
+.topbar {
+    background: white; height: 70px; border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 32px;
+}
+.topbar-title { font-weight: 700; }
+.profile { display: flex; align-items: center; gap: 10px; font-size: 14px; }
+.avatar {
+    width: 37px; height: 37px; display: grid; place-items: center;
+    border-radius: 50%; background: #e3edff; color: #2866d6; font-weight: 800;
+}
+.content { padding: 30px 32px; max-width: 1700px; margin: auto; }
+.welcome {
+    display: flex; align-items: flex-start; justify-content: space-between;
+    gap: 15px; margin-bottom: 23px;
+}
+h1 { font-size: 27px; margin: 0 0 7px; letter-spacing: -.6px; }
+.subtitle { color: var(--muted); margin: 0; font-size: 14px; }
+.date-chip {
+    background: white; border: 1px solid var(--border); border-radius: 10px;
+    padding: 10px 13px; color: #647692; font-size: 12px; white-space: nowrap;
+}
+.stats {
+    display: grid; grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 17px; margin-bottom: 22px;
+}
+.stat {
+    background: white; border: 1px solid var(--border); border-radius: 14px;
+    padding: 21px; display: flex; align-items: center; gap: 15px;
+    box-shadow: 0 3px 12px rgba(32, 58, 96, .025);
+}
+.stat-icon {
+    width: 53px; height: 53px; border-radius: 15px;
+    display: grid; place-items: center; font-size: 23px; flex-shrink: 0;
+}
+.stat-icon.blue { background: #e5efff; }
+.stat-icon.green { background: #ddf8ec; }
+.stat-icon.purple { background: #f3e5ff; }
+.stat-icon.orange { background: #fff0d5; }
+.stat-label { color: var(--muted); font-size: 12px; margin-bottom: 7px; }
+.stat-value { font-size: 27px; font-weight: 800; line-height: 1; }
+.panel {
+    background: white; border: 1px solid var(--border); border-radius: 14px;
+    padding: 23px; margin-bottom: 22px;
+    box-shadow: 0 3px 12px rgba(32, 58, 96, .025);
+}
+.panel-head {
+    display: flex; justify-content: space-between; align-items: center;
+    gap: 12px; margin-bottom: 22px;
+}
+.panel-title { font-size: 17px; font-weight: 800; margin: 0; }
+.panel-hint { color: var(--muted); font-size: 12px; margin-top: 6px; }
+.btn {
+    border: 0; border-radius: 8px; padding: 11px 15px;
+    font-size: 13px; font-weight: 700; cursor: pointer;
+    display: inline-flex; align-items: center; justify-content: center;
+    gap: 7px; text-decoration: none; transition: .15s ease;
+}
+.btn-primary { background: var(--blue); color: white; }
+.btn-primary:hover { background: #2165df; transform: translateY(-1px); }
+.btn-light { background: #eef3fc; color: #3d5d8a; }
+.btn-danger { background: #fff0f1; color: #e44856; }
+.btn-small { padding: 7px 10px; font-size: 12px; }
+.form-grid {
+    display: grid; grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 17px;
+}
+.field label {
+    display: block; font-size: 12px; font-weight: 700;
+    margin-bottom: 8px; color: #344968;
+}
+.required { color: #e44856; }
+.field input, .field select, .search-input, .filter-select {
+    width: 100%; min-width: 0; height: 43px; border: 1px solid #dce5f2;
+    border-radius: 8px; padding: 0 12px; color: var(--text);
+    background: white; outline: none; font-size: 13px;
+}
+.field input:focus, .field select:focus, .search-input:focus,
+.filter-select:focus { border-color: var(--blue); box-shadow: 0 0 0 3px #3478f61a; }
+.field input::placeholder, .search-input::placeholder { color: #a0adc0; }
+.form-footer {
+    grid-column: 1 / -1; display: flex; justify-content: flex-end; gap: 10px;
+    padding-top: 2px;
+}
+.flash {
+    padding: 12px 15px; margin-bottom: 15px; border-radius: 9px; font-size: 13px;
+}
+.flash.success { background: #e3f9ed; color: #147849; }
+.flash.error { background: #fff0f0; color: #b52f3d; }
+.table-tools {
+    display: flex; gap: 10px; align-items: center; flex-wrap: wrap;
+}
+.search-wrap { position: relative; width: min(310px, 100%); }
+.search-wrap span { position: absolute; left: 12px; top: 12px; color: #8192ac; }
+.search-input { padding-left: 35px; }
+.filter-select { width: 180px; }
+.table-wrap { width: 100%; overflow-x: auto; }
+table { width: 100%; border-collapse: collapse; min-width: 800px; }
+thead { background: #f5f8fd; }
+th {
+    text-align: left; padding: 13px 12px; font-size: 11px;
+    color: #667895; font-weight: 800; white-space: nowrap;
+}
+td {
+    padding: 12px; font-size: 12px; border-top: 1px solid #edf1f8;
+    white-space: nowrap;
+}
+tbody tr:hover { background: #f9fbff; }
+.student-cell { display: flex; align-items: center; gap: 10px; }
+.student-avatar {
+    width: 34px; height: 34px; border-radius: 50%; display: grid;
+    place-items: center; color: #315d9b; background: #e2ecfb; font-weight: 800;
+}
+.student-name { font-weight: 700; }
+.email { color: #7787a0; }
+.pill {
+    display: inline-block; border-radius: 20px; padding: 6px 10px;
+    font-size: 11px; font-weight: 700;
+}
+.course-blue { background: #e4efff; color: #2869d8; }
+.course-purple { background: #f3e6ff; color: #8841c7; }
+.course-orange { background: #fff0d6; color: #a96500; }
+.course-teal { background: #def8f5; color: #078578; }
+.course-pink { background: #ffe5f0; color: #c43d7c; }
+.gender-male { background: #e6efff; color: #316ad2; }
+.gender-female { background: #ffe5f1; color: #c43c80; }
+.status-active { background: #def8e9; color: #168052; }
+.actions { display: flex; gap: 6px; align-items: center; }
+.action-btn {
+    width: 31px; height: 31px; display: grid; place-items: center;
+    border: 0; border-radius: 7px; text-decoration: none; cursor: pointer;
+    font-size: 14px;
+}
+.edit-btn { background: #e8f0ff; color: #2c6ce3; }
+.delete-btn { background: #fff0f1; color: #e44856; }
+.inline-form { display: inline; margin: 0; }
+.table-bottom {
+    display: flex; justify-content: space-between; gap: 10px; flex-wrap: wrap;
+    padding-top: 16px; color: var(--muted); font-size: 12px;
+}
+.empty { text-align: center; padding: 35px 12px; color: var(--muted); }
+.footer { text-align: center; color: #91a0b7; font-size: 11px; padding: 0 15px 24px; }
+@media (max-width: 1100px) {
+    .sidebar { width: 200px; }
+    .content { padding: 24px 20px; }
+    .stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .form-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 700px) {
+    .layout { display: block; }
+    .sidebar { width: 100%; padding: 12px; }
+    .brand { padding: 4px 8px 12px; }
+    .nav-label, .sidebar-bottom { display: none; }
+    .nav { display: flex; overflow-x: auto; gap: 5px; }
+    .nav a { white-space: nowrap; margin: 0; padding: 10px; }
+    .topbar { height: 55px; padding: 0 16px; }
+    .content { padding: 22px 13px; }
+    .welcome { display: block; }
+    .date-chip { display: inline-block; margin-top: 12px; }
+    h1 { font-size: 23px; }
+    .stats { gap: 10px; }
+    .stat { padding: 14px 11px; gap: 9px; }
+    .stat-icon { width: 39px; height: 39px; font-size: 18px; }
+    .stat-value { font-size: 23px; }
+    .panel { padding: 15px; }
+    .panel-head { align-items: flex-start; flex-direction: column; }
+    .form-grid { grid-template-columns: 1fr; }
+    .form-footer { grid-column: auto; }
+    .table-tools, .search-wrap, .filter-select { width: 100%; }
+}
+</style>
+</head>
+<body>
+<div class="layout">
+    <aside class="sidebar">
+        <div class="brand">
+            <div class="brand-icon">🎓</div>
+            <span>StudentHub</span>
+        </div>
+        <div class="nav-label">WORKSPACE</div>
+        <nav class="nav">
+            <a class="active" href="{{ url_for('index') }}"><span class="nav-icon">▦</span> Dashboard</a>
+            <a href="#student-form"><span class="nav-icon">＋</span> Add Student</a>
+            <a href="#student-list"><span class="nav-icon">♙</span> View Students</a>
+        </nav>
+        <div class="sidebar-bottom">
+            <div class="education">
+                <div style="font-size:35px;margin-bottom:7px">📚</div>
+                <strong>Learn. Grow. Succeed.</strong>
+                <div>Better education, brighter future.</div>
+            </div>
+        </div>
+    </aside>
+
+    <main class="main">
+        <header class="topbar">
+            <div class="topbar-title">Student Management</div>
+            <div class="profile">
+                <div class="avatar">P</div>
+                <span>Administrator</span>
+            </div>
+        </header>
+
+        <div class="content">
+            <section class="welcome">
+                <div>
+                    <h1>Welcome back! 👋</h1>
+                    <p class="subtitle">Manage your students, records, and courses from one place.</p>
+                </div>
+                <div class="date-chip">✦ &nbsp; Student administration dashboard</div>
+            </section>
+
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% for category, message in messages %}
+                    <div class="flash {{ category }}">{{ message }}</div>
+                {% endfor %}
+            {% endwith %}
+
+            <section class="stats">
+                <div class="stat">
+                    <div class="stat-icon blue">👥</div>
+                    <div><div class="stat-label">Total Students</div><div class="stat-value">{{ total }}</div></div>
+                </div>
+                <div class="stat">
+                    <div class="stat-icon green">👨</div>
+                    <div><div class="stat-label">Male Students</div><div class="stat-value">{{ male }}</div></div>
+                </div>
+                <div class="stat">
+                    <div class="stat-icon purple">👩</div>
+                    <div><div class="stat-label">Female Students</div><div class="stat-value">{{ female }}</div></div>
+                </div>
+                <div class="stat">
+                    <div class="stat-icon orange">📘</div>
+                    <div><div class="stat-label">Courses Represented</div><div class="stat-value">{{ course_count }}</div></div>
+                </div>
+            </section>
+
+            <section class="panel" id="student-form">
+                <div class="panel-head">
+                    <div>
+                        <h2 class="panel-title">{{ '✏️  Edit Student' if editing else '＋  Add New Student' }}</h2>
+                        <div class="panel-hint">
+                            {{ 'Update the student details below.' if editing else 'Enter the details to register a new student.' }}
+                        </div>
+                    </div>
+                    {% if editing %}
+                    <a class="btn btn-light" href="{{ url_for('index') }}">Cancel edit</a>
+                    {% endif %}
+                </div>
+
+                <form action="{{ url_for('update_student', student_id=editing.id) if editing else url_for('add_student') }}" method="post">
+                    <div class="form-grid">
+                        <div class="field">
+                            <label for="name">Full Name <span class="required">*</span></label>
+                            <input id="name" name="name" maxlength="100" placeholder="e.g. Aarav Sharma" required value="{{ editing.name if editing else '' }}">
+                        </div>
+                        <div class="field">
+                            <label for="email">Email Address <span class="required">*</span></label>
+                            <input id="email" type="email" name="email" maxlength="150" placeholder="student@example.com" required value="{{ editing.email if editing else '' }}">
+                        </div>
+                        <div class="field">
+                            <label for="course">Course <span class="required">*</span></label>
+                            <select id="course" name="course" required>
+                                <option value="">Select a course</option>
+                                {% for course in courses %}
+                                <option value="{{ course }}" {% if editing and editing.course == course %}selected{% endif %}>{{ course }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="field">
+                            <label for="gender">Gender <span class="required">*</span></label>
+                            <select id="gender" name="gender" required>
+                                <option value="">Select gender</option>
+                                <option value="Male" {% if editing and editing.gender == 'Male' %}selected{% endif %}>Male</option>
+                                <option value="Female" {% if editing and editing.gender == 'Female' %}selected{% endif %}>Female</option>
+                            </select>
+                        </div>
+                        <div class="form-footer">
+                            {% if editing %}
+                            <a class="btn btn-light" href="{{ url_for('index') }}">Cancel</a>
+                            <button class="btn btn-primary" type="submit">✓ &nbsp; Save Changes</button>
+                            {% else %}
+                            <button class="btn btn-primary" type="submit">＋ &nbsp; Add Student</button>
+                            {% endif %}
+                        </div>
+                    </div>
+                </form>
+            </section>
+
+            <section class="panel" id="student-list">
+                <div class="panel-head">
+                    <div>
+                        <h2 class="panel-title">♙ &nbsp; Student Directory</h2>
+                        <div class="panel-hint">View and manage all registered student records.</div>
+                    </div>
+                    <div class="table-tools">
+                        <div class="search-wrap">
+                            <span>⌕</span>
+                            <input class="search-input" id="search" type="search" placeholder="Search name, email, course...">
+                        </div>
+                        <select class="filter-select" id="course-filter" aria-label="Filter by course">
+                            <option value="">All Courses</option>
+                            {% for course in courses %}
+                            <option value="{{ course }}">{{ course }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+
+                <div class="table-wrap">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>ID</th><th>STUDENT</th><th>EMAIL</th><th>COURSE</th>
+                                <th>GENDER</th><th>STATUS</th><th>ACTIONS</th>
+                            </tr>
+                        </thead>
+                        <tbody id="student-rows">
+                            {% for student in students %}
+                            <tr data-name="{{ student.name|lower }}" data-email="{{ student.email|lower }}" data-course="{{ student.course }}">
+                                <td>#{{ student.id }}</td>
+                                <td>
+                                    <div class="student-cell">
+                                        <div class="student-avatar">{{ student.name[:1]|upper }}</div>
+                                        <span class="student-name">{{ student.name }}</span>
+                                    </div>
+                                </td>
+                                <td class="email">{{ student.email or '—' }}</td>
+                                <td>
+                                    {% set course_class = 'course-blue' %}
+                                    {% if 'Information' in student.course or 'Data Science' in student.course %}{% set course_class = 'course-purple' %}
+                                    {% elif 'Mechanical' in student.course or 'Civil' in student.course %}{% set course_class = 'course-orange' %}
+                                    {% elif 'Electronics' in student.course %}{% set course_class = 'course-teal' %}
+                                    {% elif 'AIML' in student.course %}{% set course_class = 'course-pink' %}
+                                    {% endif %}
+                                    <span class="pill {{ course_class }}">{{ student.course }}</span>
+                                </td>
+                                <td><span class="pill {{ 'gender-male' if student.gender == 'Male' else 'gender-female' }}">{{ student.gender }}</span></td>
+                                <td><span class="pill status-active">{{ student.status }}</span></td>
+                                <td>
+                                    <div class="actions">
+                                        <a class="action-btn edit-btn" title="Edit student" aria-label="Edit {{ student.name }}" href="{{ url_for('index', edit=student.id) }}#student-form">✎</a>
+                                        <form class="inline-form" action="{{ url_for('delete_student', student_id=student.id) }}" method="post" onsubmit="return confirm('Delete {{ student.name }}? This cannot be undone.');">
+                                            <button class="action-btn delete-btn" title="Delete student" aria-label="Delete {{ student.name }}" type="submit">✕</button>
+                                        </form>
+                                    </div>
+                                </td>
+                            </tr>
+                            {% else %}
+                            <tr id="empty-row"><td colspan="7" class="empty">🎓<br><br>No students registered yet. Use the form above to add your first student.</td></tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                <div class="table-bottom">
+                    <span id="result-count">Showing {{ students|length }} student(s)</span>
+                    <span>StudentHub · Student records</span>
+                </div>
+            </section>
+        </div>
+        <footer class="footer">© 2026 StudentHub · Student Management System · Built for learning</footer>
+    </main>
+</div>
+
+<script>
+const searchInput = document.getElementById("search");
+const courseFilter = document.getElementById("course-filter");
+const rows = Array.from(document.querySelectorAll("#student-rows tr[data-name]"));
+const resultCount = document.getElementById("result-count");
+
+function filterStudents() {
+    const query = searchInput.value.trim().toLowerCase();
+    const course = courseFilter.value;
+    let visible = 0;
+
+    rows.forEach(row => {
+        const matchesText =
+            row.dataset.name.includes(query) ||
+            row.dataset.email.includes(query) ||
+            row.dataset.course.toLowerCase().includes(query);
+        const matchesCourse = !course || row.dataset.course === course;
+        const show = matchesText && matchesCourse;
+        row.hidden = !show;
+        if (show) visible++;
+    });
+
+    resultCount.textContent = `Showing ${visible} of ${rows.length} student(s)`;
+    let empty = document.getElementById("filter-empty");
+    if (visible === 0 && rows.length > 0) {
+        if (!empty) {
+            empty = document.createElement("tr");
+            empty.id = "filter-empty";
+            empty.innerHTML = '<td colspan="7" class="empty">No matching students found. Try another search or filter.</td>';
+            document.getElementById("student-rows").appendChild(empty);
+        }
+    } else if (empty) {
+        empty.remove();
+    }
+}
+searchInput.addEventListener("input", filterStudents);
+courseFilter.addEventListener("change", filterStudents);
+</script>
+</body>
+</html>
