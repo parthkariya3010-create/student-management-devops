@@ -5,7 +5,7 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                echo 'Source code is managed by Jenkins SCM'
+                echo 'Source code checked out from GitHub'
             }
         }
 
@@ -21,9 +21,15 @@ pipeline {
             }
         }
 
+        stage('Check Docker Compose') {
+            steps {
+                bat '"C:\\Users\\parth\\AppData\\Local\\Programs\\DockerDesktop\\resources\\bin\\docker-compose.exe" version'
+            }
+        }
+
         stage('Build Application') {
             steps {
-                bat 'docker compose build'
+                bat '"C:\\Users\\parth\\AppData\\Local\\Programs\\DockerDesktop\\resources\\bin\\docker-compose.exe" build'
             }
         }
     }
